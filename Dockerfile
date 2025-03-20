@@ -11,6 +11,9 @@ COPY package-lock.json ./
 # Install dependencies
 RUN npm install
 
+# Install serve to run the app
+RUN npm install -g serve
+
 # Copy the entire app directory to the container
 COPY . .
 
@@ -24,4 +27,4 @@ ENV NODE_ENV=production
 EXPOSE 80
 
 # Start the app
-CMD ["npx", "serve", "-s", "build"]
+CMD ["serve", "-s", "build"]
