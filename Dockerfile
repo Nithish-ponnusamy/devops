@@ -21,7 +21,7 @@ RUN npm run build
 ENV NODE_ENV=production
 
 # Expose the port your app runs on
-EXPOSE 3000
+EXPOSE 80
 
 # Start the app
 CMD ["npx", "serve", "-s", "build"]
