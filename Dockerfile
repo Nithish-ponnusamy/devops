@@ -1,26 +1,27 @@
-# Use the official Node.js image as the base image
+# Base image
 FROM node:18
 
 # Set the working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json ./
+COPY package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application files
+# Copy the entire app directory to the container
 COPY . .
 
-# Build the React app for production
+# Build the React app
 RUN npm run build
 
-# Install 'serve' to serve the static files
-RUN npm install -g serve
+# Set environment to production
+ENV NODE_ENV=production
 
-# Expose the port for the application
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Serve the app
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Start the app
+CMD ["npx", "serve", "-s", "build"]
