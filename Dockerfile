@@ -1,21 +1,29 @@
-# Use Node.js Alpine base image
-FROM node:alpine
+# Base image
+FROM node:18 AS build
 
-# Create and set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package.json package-lock.json /app/
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the entire codebase to the working directory
-COPY . /app/
+# Copy all files
+COPY . .
 
-# Expose the port your app runs on (replace <PORT_NUMBER> with your app's actual port)
-EXPOSE 3000
+# Build the app for production
+RUN npm run build
 
-# Define the command to start your application (replace "start" with the actual command to start your app)
-CMD ["npm", "start"]
+# Use Nginx to serve the app
+FROM nginx:latest
 
+# Copy built files to Nginx html directory
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
